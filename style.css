@@ -10,26 +10,31 @@
   --block-text: #ffffff;
   --muted: #999;
 
+  /* SCALE: 1 design pixel. The blocks were designed 720px wide.
+     On smaller screens --u shrinks so everything scales down together. */
+  --design-width: 720;
+  --u: min(1px, calc((100vw - 48px) / var(--design-width)));
+
   /* LOCK */
-  --lock-font: 200px;
+  --lock-font: calc(200 * var(--u));
 
   /* LAMP */
-  --lamp-font:       145px;
-  --lamp-bar-height:  60px;
+  --lamp-font:       calc(145 * var(--u));
+  --lamp-bar-height:  calc(60 * var(--u));
 
   /* GLIMPO */
-  --glimpo-font: 120px;
+  --glimpo-font: calc(120 * var(--u));
 
   /* CONFESSION BOX */
-  --confession-font:    112px;
-  --confession-spacing: -3px;
+  --confession-font:    calc(112 * var(--u));
+  --confession-spacing: calc(-3 * var(--u));
 
   /* WEBPAGES */
-  --web-font:    100px;
+  --web-font:    calc(100 * var(--u));
   --web-stretch: 1.7;
 
   /* LAYOUT */
-  --row-gap: 8px;
+  --row-gap: max(4px, calc(8 * var(--u)));
   --top-ratio: 1.8fr 1fr;
 }
 
@@ -89,13 +94,14 @@ nav a:hover, nav span:hover { text-decoration: underline; }
 
 /* ── MAIN ── */
 main {
-  padding: 40px 240px 60px;
-  max-width: 1200px;
+  padding: 40px 24px 60px;
+  max-width: 768px;                   /* 720px of blocks + 24px each side */
   margin: 0 auto;
   display: flex;
   flex-direction: column;
   justify-content: center;            /* centers the stack on the screen */
-  min-height: calc(100vh - 47px);     /* screen height minus the nav */
+  min-height: calc(100vh - 47px);
+  min-height: calc(100svh - 47px);    /* iPhone: ignores the moving Safari bar */     /* screen height minus the nav */
   gap: var(--row-gap);
 }
 
@@ -136,7 +142,7 @@ main {
   display: inline-block;
   transition: color 0.3s;
   text-align: center;
-  padding: 20px 30px;
+  padding: calc(20 * var(--u)) calc(30 * var(--u));
   margin: 0;
   transform-origin: center;
 }
@@ -151,7 +157,7 @@ main {
 
 /* ── LAMP ── */
 .block-lamp {
-  min-height: 200px;
+  min-height: calc(200 * var(--u));
   transition: background 0.3s;
 }
 
@@ -212,7 +218,7 @@ main {
    Wide and short so it's the smallest block on the page. */
 .block-web {
   width: 100%;
-  padding-top: 8px;
+  padding-top: calc(8 * var(--u));
 }
 
 .block-web .proj-title {
@@ -237,4 +243,13 @@ footer {
   background: transparent;
   opacity: 1;
   transition: none;
+}
+/* ── PHONES ── */
+@media (max-width: 500px) {
+  nav { padding: 14px 16px; }
+  .nav-left { gap: 12px; }
+  .nav-right { gap: 10px; }
+  main { padding-left: 16px; padding-right: 16px; }
+  :root { --u: min(1px, calc((100vw - 32px) / var(--design-width))); }
+  footer { padding: 10px 16px 14px; }
 }
