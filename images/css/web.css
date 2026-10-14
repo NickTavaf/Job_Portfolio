@@ -1,0 +1,59 @@
+/* web.css: styles only for the Webpages page */
+
+:root { --link: #1a4fd6; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --link: #6f9bff; } }
+:root[data-theme="dark"] { --link: #6f9bff; }
+
+/* centered title, like the sketch */
+.title, .sub { text-align: center; }
+.sub { margin-top: 10px; }
+
+/* three equal columns; rows line up */
+.sites {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 48px 40px;
+  margin-top: 64px;
+}
+/* 7th site sits in the middle of the last row */
+.site:last-child:nth-child(3n + 1) { grid-column: 2; }
+
+.site {
+  display: flex; flex-direction: column;
+  min-width: 0;
+  border-top: 2px solid var(--fg);
+  padding-top: 16px;
+  transition: border-color .2s;
+}
+.site:hover { border-top-color: var(--link); }
+
+.site h2 { margin: 0 0 6px; font-size: 30px; line-height: 1.05; }
+.site h2 a { color: inherit; text-decoration: none; }
+.site h2 a:hover { color: var(--link); }
+
+.site .link {
+  align-self: flex-start;
+  font-size: 13px; color: var(--link);
+  text-decoration: none; overflow-wrap: anywhere;
+  margin-bottom: 14px;
+}
+.site .link:hover { text-decoration: underline; text-underline-offset: 3px; }
+.site .soon { color: var(--muted); font-style: italic; }
+
+.site p { font-size: 15px; line-height: 1.55; flex: 1; }
+
+/* small labels at the bottom of each card */
+.tags { list-style: none; display: flex; flex-wrap: wrap; gap: 6px; margin-top: 16px; }
+.tags li {
+  font-size: 11px; letter-spacing: .06em; text-transform: uppercase;
+  border: 1px solid var(--fg); padding: 2px 8px;
+}
+
+@media (max-width: 900px) {
+  .sites { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .site:last-child:nth-child(3n + 1) { grid-column: auto; }
+}
+@media (max-width: 600px) {
+  .sites { grid-template-columns: minmax(0, 1fr); gap: 40px; }
+}

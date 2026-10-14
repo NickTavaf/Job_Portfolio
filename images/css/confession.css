@@ -1,0 +1,9 @@
+/* confession.css: styles only for the Confession Box page */
+
+/* three photos per row in Build */
+.pics { grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+figure button img { max-height: 340px; }
+
+/* the long title gets a little smaller so it fits on one line */
+.title { font-size: 88px; }
+@media (max-width: 600px) { .title { font-size: 48px; } }

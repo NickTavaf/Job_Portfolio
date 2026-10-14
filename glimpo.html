@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nick Tavaf — Glimpo</title>
+<link rel="stylesheet" href="css/project.css">
+<link rel="stylesheet" href="css/glimpo.css">
+</head>
+<body>
+<nav>
+  <div class="group">
+    <a href="index.html" data-s>Nick Tavaf</a>
+    <a href="index.html" data-s>Work.</a>
+    <a href="#" data-s>Fun.</a>
+    <a href="bio.html" data-s>About.</a>
+  </div>
+  <div class="group"><button id="toggleBtn" type="button" data-s>b&amp;w</button></div>
+</nav>
+
+<main>
+  <h1 class="title" id="title" aria-label="Glimpo">GLIMPO</h1>
+  <p class="sub">Game Design / Physical Computing · 2025 · Built with Malaz Elbadri</p>
+
+  <div class="hero">
+    <video src="images/Glimpo%20Video.mp4" poster="images/Glimpo%20Poster.jpg" controls playsinline preload="metadata" aria-label="Glimpo promo video: the Unity game, the LEDs lighting up, and the cabinet being played handheld"></video>
+  </div>
+
+  <section>
+    <h2>Overview</h2>
+    <p>Glimpo is the classic Plinko game rebuilt as a small arcade cabinet. A ball drops through a neon peg board on screen, and when it lands, the LED for that slot lights up on the cabinet itself. The game runs in Unity, the lights and button run on an Arduino, and the two talk to each other in real time.</p>
+  </section>
+
+  <section>
+    <h2>Concept</h2>
+    <p>Plinko is a big wooden board with physical pegs and chips. We wanted to keep what makes it fun, the unpredictable bounce and the wait to see where it lands, and fit it into something small enough to carry. The physics move into Unity, and the LEDs bring the result back into the real world so the game isn't trapped on a screen.</p>
+    <p>The look comes from neon arcade games: glowing pegs, bright color-coded slots, and a cabinet that frames the screen with the controls in front.</p>
+  </section>
+
+  <section>
+    <h2>My Role</h2>
+    <p>Malaz led the digital side in Unity. I was the lead builder, responsible for the physical cabinet and all the hardware integration:</p>
+    <ul class="tech">
+      <li>Designed and assembled the cabinet that houses the screen, Arduino and wiring</li>
+      <li>Wired and soldered the LEDs and the push button to the Arduino</li>
+      <li>Programmed the Arduino to receive serial data from Unity and trigger the right LED</li>
+      <li>Lined each LED up with its slot in the game</li>
+      <li>Painted and finished the cabinet, and troubleshot every hardware issue along the way</li>
+    </ul>
+    <p style="margin-top:14px">We worked closely the whole way through, including on the code.</p>
+  </section>
+
+  <section>
+    <h2>Design</h2>
+    <p>I sketched the cabinet first: a screen tilted back like an arcade machine, with a sloped control panel in front holding five LEDs and one big button. The final cabinet is 3D-printed and painted black, with a secondhand monitor mounted inside.</p>
+    <div class="pics">
+      <figure>
+        <button type="button"><img src="images/Box%20Design.png" alt="Line sketch of the cabinet: a tilted screen with five LED holes and a button on the front panel" width="658" height="592" loading="lazy"></button>
+        <figcaption>First sketch of the cabinet</figcaption>
+      </figure>
+      <figure>
+        <button type="button"><img src="images/final%20page.png" alt="The finished black cabinet showing the Game Over screen with a score of 35, five LEDs and a red button" width="742" height="662" loading="lazy"></button>
+        <figcaption>The finished cabinet</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section>
+    <h2>Build</h2>
+    <p>The button connects to pin 4 on the Arduino, and the five LEDs run from pins 9 to 13 through resistors on a small perfboard. When Unity detects which slot the ball landed in, it sends that over serial through Uduino, and the Arduino lights the matching LED. Everything had to fit behind the screen, so the board and wiring sit tight against the back of the cabinet.</p>
+    <div class="pics">
+      <figure>
+        <button type="button"><img src="images/wiring%20sketch.png" alt="Hand-drawn wiring diagram: button on pin 4, LEDs on pins 9 to 13 through a perfboard" width="740" height="644" loading="lazy"></button>
+        <figcaption>Wiring diagram</figcaption>
+      </figure>
+      <figure>
+        <button type="button"><img src="images/Inside%20glimpo%20wires.png" alt="The cabinet with the screen removed, showing the perfboard, wires and Arduino behind the LEDs and button" width="772" height="754" loading="lazy"></button>
+        <figcaption>Inside, before the screen goes in</figcaption>
+      </figure>
+      <figure>
+        <button type="button"><img src="images/Inside%20glimpo%20wires%202.png" alt="Back view of the cabinet showing the screen's circuit board, the perfboard and the Arduino" width="730" height="540" loading="lazy"></button>
+        <figcaption>Back of the screen, with the perfboard and Arduino</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section>
+    <h2>Gameplay</h2>
+    <p>Once the hardware and Unity were talking reliably, we added what makes it feel like an arcade game: a scoreboard with instructions, a sound for each slot, a time limit, and a Game Over screen. In testing, the time limit and Game Over screen made people play more rounds and stay longer.</p>
+  </section>
+
+  <section>
+    <h2>Reflection</h2>
+    <p>Glimpo taught me how to make hardware and software agree in real time. The hardest part was timing and alignment, making sure the LED that lights up is the slot the ball actually landed in, every time. It was also my first time designing an enclosure around a screen, where every component has to fit in a small space.</p>
+
+    <h3>Technologies Used</h3>
+    <ul class="tech"><li>Arduino</li><li>Unity and C#</li><li>Uduino (Unity to Arduino serial)</li><li>LEDs, push button, perfboard</li><li>3D printing (PLA), paint</li></ul>
+  </section>
+
+  <div class="pager">
+    <a href="lock.html">← Previous Project: Lock</a>
+    <a href="index.html">All Projects</a>
+  </div>
+</main>
+
+<footer><span data-s>New York, NY</span><span data-s>© 2026</span></footer>
+
+<div class="lb" id="lb" hidden><img id="lbImg" alt=""></div>
+<script src="project.js"></script>
+</body>
+</html>

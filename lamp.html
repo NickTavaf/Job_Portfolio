@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nick Tavaf — Lamp</title>
+<link rel="stylesheet" href="css/project.css">
+<link rel="stylesheet" href="css/lamp.css">
+</head>
+<body>
+<nav>
+  <div class="group">
+    <a href="index.html" data-s>Nick Tavaf</a>
+    <a href="index.html" data-s>Work.</a>
+    <a href="#" data-s>Fun.</a>
+    <a href="bio.html" data-s>About.</a>
+  </div>
+  <div class="group"><button id="toggleBtn" type="button" data-s>b&amp;w</button></div>
+</nav>
+
+<main>
+  <h1 class="title" id="title" aria-label="Lamp">LAMP</h1>
+  <p class="sub">Physical Computing · Core Lab, sophomore fall · Solo project</p>
+
+  <div class="hero">
+    <img src="images/Finished%20Photo.png" alt="The finished lamp: a black cardboard cube base with a dial and three slider slots, under a beige linen drum shade" width="678" height="858">
+  </div>
+
+  <section>
+    <h2>Overview</h2>
+    <p>A table lamp you tune by hand. Three knobs mix red, green and blue light, and a fourth sets the brightness. It was the first thing I ever built, for my first-semester Core Lab project.</p>
+  </section>
+
+  <section>
+    <h2>Concept</h2>
+    <p>The brief was open: make an object with Arduino. I wanted something I would actually keep on my desk, so I started with the most familiar object I could think of and gave it one new trick.</p>
+    <p>Most color-changing lamps hide their controls in an app or a remote. I wanted the color to live on the lamp itself, so you turn a knob and watch the light respond, the same way you would mix paint.</p>
+  </section>
+
+  <section>
+    <h2>Moodboard</h2>
+    <p>Classic table lamps with square bases and fabric shades on one side, the RGB color wheel and a row of potentiometers on the other. My sketches put the two together: a cube base that holds the electronics, with the controls on its face and the light under a shade.</p>
+    <div class="pics one">
+      <figure>
+        <button type="button"><img src="images/Moodboard.png" alt="Moodboard of table lamps, a glowing cube light, an RGB color wheel, potentiometers, and hand sketches of the lamp" width="2140" height="1174" loading="lazy"></button>
+      </figure>
+    </div>
+  </section>
+
+  <section>
+    <h2>Build</h2>
+    <p>I prototyped the circuit on a breadboard first, wiring the potentiometers to the Arduino and testing them against a strip of addressable LEDs until each knob drove the color I expected.</p>
+    <p>Then I moved everything into the body. The whole base is cardboard, cut, glued and painted black, with slots for the slider knobs and the dial. Inside, the LED strip is coiled up into the neck so the light throws up into the shade. I kept cardboard for the final piece and spent the time on finishing instead, so it reads as a real object on a table.</p>
+    <div class="pics">
+      <figure>
+        <button type="button"><img src="images/Wiring.png" alt="Four photos of breadboard prototypes with jumper wires, potentiometers and an Arduino Uno" width="1902" height="1112" loading="lazy"></button>
+        <figcaption>Breadboard tests</figcaption>
+      </figure>
+      <figure>
+        <button type="button"><img src="images/More%20Wiring.png" alt="Build photos: the wiring, fitting the LED strip into the black box, the inside of the cardboard base, and the LED strip lit purple" width="1974" height="1054" loading="lazy"></button>
+        <figcaption>Moving into the cardboard housing</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section>
+    <h2>Code</h2>
+    <p>Each pass of the loop reads the knobs, maps each one from 0–1023 to a 0–255 color value, and sets every pixel on the strip to the mixed color.</p>
+    <div class="code"><pre><code>// &lt;Led.Collection&gt; NeoPixel.h === Library
+#include &lt;Adafruit_NeoPixel.h&gt;
+#ifdef __AVR__
+#include &lt;avr/power.h&gt; // Required for 16 MHz Adafruit Trinket
+#endif
+
+// (&lt;Collection.Define PINs))
+#define PIN 6
+#define NUMPIXELS 200
+Adafruit_NeoPixel pixels(NUMPIXELS, PIN, NEO_GRB + NEO_KHZ800);
+
+// (Defined) - SET.Potentiometer.Pins
+#define DELAYVAL 500
+#define LED_PIN 11
+#define POTENTIOMETER_PIN A0
+#define POTENTIOMETER_PIN2 A3
+#define POTENTIOMETER_PIN4 A4
+#define POTENTIOMETER_PIN3 A2
+
+float brightnessFull = 1.0;
+
+void setup() {
+#if defined(__AVR_ATtiny85__) &amp;&amp; (F_CPU == 16000000)
+  clock_prescale_set(clock_div_1);
+#endif
+  pixels.begin(); // INITIALIZE NeoPixel strip object (REQUIRED)
+  pinMode(LED_PIN, OUTPUT);
+  Serial.begin(9600);
+}
+
+void loop() {
+  pixels.clear(); // Set all pixel colors to 'off'
+  int potentiometerValue = analogRead(POTENTIOMETER_PIN);
+  int brightness = map(potentiometerValue, 0, 1023, 0, 255);
+  int potentiometerValue1 = analogRead(POTENTIOMETER_PIN2);
+  int brightness1 = map(potentiometerValue1, 0, 1023, 0, 255);
+  int potentiometerValue2 = analogRead(POTENTIOMETER_PIN4);
+  int brightness2 = map(potentiometerValue2, 0, 1023, 0, 255);
+  brightnessFull = analogRead(A2) / 1023.0;
+  Serial.println(brightnessFull);
+
+  for (int i = 0; i &lt; NUMPIXELS; i++) { // For each pixel...
+    pixels.setPixelColor(i, pixels.Color(brightness2, brightness1, brightness));
+  }
+  pixels.show();
+}</code></pre></div>
+  </section>
+
+  <section>
+    <h2>Reflection</h2>
+    <p>This project is where I learned the basics I still use: reading analog inputs, mapping values, driving addressable LEDs, and moving a circuit off the breadboard into a real enclosure. It also taught me that the finish matters as much as the electronics. A plain cardboard box became something people assumed was bought, because of the paint, the proportions and the shade.</p>
+    <p>Next time I would build the base from wood or 3D-printed parts, solder the circuit onto a permanent board, and add presets so a favorite color is one tap away.</p>
+
+    <h3>Technologies Used</h3>
+    <ul class="tech"><li>Arduino Uno</li><li>Adafruit NeoPixel LED strip</li><li>Potentiometers (×4)</li><li>Cardboard and acrylic paint</li></ul>
+  </section>
+
+  <div class="pager">
+    <a href="index.html">← All Projects</a>
+    <a href="lock.html">Next Project: Lock →</a>
+  </div>
+</main>
+
+<footer><span data-s>New York, NY</span><span data-s>© 2026</span></footer>
+
+<div class="lb" id="lb" hidden><img id="lbImg" alt=""></div>
+<script src="project.js"></script>
+</body>
+</html>

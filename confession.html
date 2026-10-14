@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nick Tavaf — Confession Box</title>
+<link rel="stylesheet" href="css/project.css">
+<link rel="stylesheet" href="css/confession.css">
+</head>
+<body>
+<nav>
+  <div class="group">
+    <a href="index.html" data-s>Nick Tavaf</a>
+    <a href="index.html" data-s>Work.</a>
+    <a href="#" data-s>Fun.</a>
+    <a href="bio.html" data-s>About.</a>
+  </div>
+  <div class="group"><button id="toggleBtn" type="button" data-s>b&amp;w</button></div>
+</nav>
+
+<main>
+  <h1 class="title" id="title" aria-label="Confession Box">CONFESSION BOX</h1>
+  <p class="sub">Physical Computing / Experience Design · Junior spring · 5-person team</p>
+
+  <div class="hero">
+    <video src="images/Participation%20Machine%20Video.mp4" poster="images/Participation%20Machine%20Poster.jpg" controls playsinline preload="metadata" aria-label="Project video: building the box, both playtests, and the final booth"></video>
+  </div>
+
+  <section>
+    <h2>Overview</h2>
+    <p>The Box is a private booth where you hear how someone else in your community is feeling, then share something of your own. You sit down, close the door, and an anonymous voice plays back what the last person said. Then it's your turn. Nothing is tied to who said it.</p>
+  </section>
+
+  <section>
+    <h2>Concept</h2>
+    <p>The brief was to build a participation machine. We defined that as a device that invites people to interact with it, where its purpose comes from how they use it.</p>
+    <p>Each sharing is built around one of six core emotions: happy, sad, scared, angry, surprise and disgust. After hearing someone's feeling, you're told the question that prompted it, and you answer the same question. The idea is a live pulse of the people around you, anonymous but intimate.</p>
+  </section>
+
+  <section>
+    <h2>My Role</h2>
+    <p>My role on the team was physical construction and experiential design. I was responsible for the box itself and how it feels to be inside it:</p>
+    <ul class="tech">
+      <li>Built the booth: the wooden frame, the walls and the door</li>
+      <li>Soundproofed it with acoustic foam so no one outside can hear what you're saying</li>
+      <li>Painted and finished it, and put it on wheels so it can move between spaces</li>
+      <li>Ran the wiring and worked with the Arduino and coding team to fit the electronics into the box</li>
+      <li>Helped choose parts that worked with the box's design</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Build</h2>
+    <p>The booth starts as a frame of 2×4s, sized for one seated person. Plywood walls go on next, then wavy acoustic foam lines the inside to absorb sound. The goal was a space that's dim and quiet, so people feel comfortable speaking honestly.</p>
+    <div class="pics">
+      <figure>
+        <button type="button"><img src="images/Making%20Box.png" alt="Two team members assembling the 2x4 wooden frame of the booth in the studio" width="978" height="1328" loading="lazy"></button>
+        <figcaption>Building the frame</figcaption>
+      </figure>
+      <figure>
+        <button type="button"><img src="images/Making%20Box%20Side.png" alt="The booth with plywood walls and acoustic foam lining, seen from above" width="1236" height="1146" loading="lazy"></button>
+        <figcaption>Plywood walls and acoustic foam</figcaption>
+      </figure>
+      <figure>
+        <button type="button"><img src="images/Making%20Box%20Top.png" alt="Looking down into the booth at the foam-lined walls and a chair" width="1550" height="1236" loading="lazy"></button>
+        <figcaption>Inside, before the final finish</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section>
+    <h2>How It Works</h2>
+    <p>An Arduino Nano runs most of the system. The experience starts when the door clicker and the seat clicker are both pressed, one after the other, so it only begins once someone is seated with the door shut.</p>
+    <p>A random past entry is chosen and read aloud with text-to-speech, using the Orpheus-TTS AI voice so no one hears the original speaker. Then the question behind it plays, and you record your own answer. Python turns your speech into text and stores it in a local file, and TouchDesigner manages the audio while you're inside.</p>
+  </section>
+
+  <section>
+    <h2>Playtesting</h2>
+    <p>Our first playtest used a bare framework to test the idea before building the full environment. People found sharing interesting, but wanted it to feel more complete, and thought the AI voice sounded too robotic.</p>
+    <p>For the second playtest we made the voice sound more natural, gave people the choice to leave without sharing, and added a Pepper's ghost illusion of a goldfish to make the space calmer. The goldfish turned out to be distracting, and we noticed most people wanted to listen before sharing.</p>
+    <p>So the final version is simpler and more direct. We cut the goldfish, and a confession plays as soon as you sit down and close the door.</p>
+    <div class="pics">
+      <figure>
+        <button type="button"><img src="images/Finished%20Box%201.png" alt="The finished booth: a black box on wheels with its door open, black fabric inside and a wooden chair" width="704" height="1142" loading="lazy"></button>
+        <figcaption>The finished booth</figcaption>
+      </figure>
+      <figure>
+        <button type="button"><img src="images/Finished%20Box%202.png" alt="Inside the finished booth: black fabric walls, a wooden cane chair and a fixture hanging from the ceiling" width="1018" height="1340" loading="lazy"></button>
+        <figcaption>The final interior</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section>
+    <h2>Next Steps</h2>
+    <p>With more time, we'd add a narrative, like what a confession booth might look like in 100 years, along with reactive visuals or LEDs inside, and more ways to take part, such as choosing a question or listening to more than one confession.</p>
+
+    <h3>Team</h3>
+    <p>MinKyu, Gabriel, Mick, Jaden and Nick</p>
+
+    <h3>Technologies Used</h3>
+    <ul class="tech"><li>Arduino Nano, door and seat clickers</li><li>Python speech-to-text, local JSON storage</li><li>Orpheus-TTS AI voice</li><li>TouchDesigner</li><li>2×4 frame, plywood, acoustic foam, paint, casters</li></ul>
+  </section>
+
+  <div class="pager">
+    <a href="glimpo.html">← Previous Project: Glimpo</a>
+    <a href="index.html">All Projects</a>
+  </div>
+</main>
+
+<footer><span data-s>New York, NY</span><span data-s>© 2026</span></footer>
+
+<div class="lb" id="lb" hidden><img id="lbImg" alt=""></div>
+<script src="project.js"></script>
+</body>
+</html>

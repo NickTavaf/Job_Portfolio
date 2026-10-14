@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nick Tavaf</title>
+<script>
+  if (localStorage.getItem('darkMode') === 'true') {
+    document.documentElement.classList.add('dark');
+  }
+</script>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<nav>
+  <div class="nav-left">
+    <a href="/" class="site-name">Nick Tavaf</a>
+    <a href="bio.html">Bio.</a>
+    <a href="#">IG.</a>
+  </div>
+  <div class="nav-right">
+    <a href="lamp.html">1.</a>
+    <a href="lock.html">2.</a>
+    <a href="glimpo.html">3.</a>
+    <a href="confession.html">4.</a>
+    <a href="web.html">W.</a>
+    <button class="toggle-btn" id="toggleBtn" onclick="toggleMode()">b&w</button>
+  </div>
+</nav>
+
+<main>
+
+  <div class="row-top">
+    <a href="lock.html" class="proj-block block-lock">
+      <span class="proj-title">LOCK</span>
+    </a>
+    <a href="lamp.html" class="proj-block block-lamp">
+      <div class="lamp-text-wrap">
+        <span class="proj-title">LAMP</span>
+      </div>
+      <div class="lamp-bar" id="lampBar"></div>
+    </a>
+  </div>
+
+  <a href="glimpo.html" class="proj-block block-glimpo">
+    <span class="proj-title">GLIMPO</span>
+  </a>
+
+  <a href="confession.html" class="proj-block block-confession">
+    <span class="proj-title">CONFESSION BOX</span>
+  </a>
+
+  <a href="web.html" class="proj-block block-web">
+    <span class="proj-title">WEBPAGES</span>
+  </a>
+
+</main>
+
+<footer>
+  <span>New York, NY</span>
+  <span>© 2026</span>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>

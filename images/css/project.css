@@ -1,0 +1,84 @@
+/* project.css: shared by every project page and the bio page.
+   Page-specific bits live in lamp.css, lock.css, glimpo.css, bio.css. */
+
+/* Layout: one centered column, stacked top to bottom. Section headings sit at the left edge; their text is indented like a tab. */
+:root {
+  --bg: #ffffff;
+  --fg: #000000;
+  --muted: #777777;
+  --panel: #f2f2f2;
+  --display: Impact, 'Arial Narrow', sans-serif;
+  --body: 'Times New Roman', Times, serif;
+  --mono: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) { --bg:#000; --fg:#fff; --muted:#888; --panel:#111; color-scheme: dark; }
+}
+:root[data-theme="dark"] { --bg:#000; --fg:#fff; --muted:#888; --panel:#111; color-scheme: dark; }
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { background: var(--bg); color: var(--fg); }
+body {
+  font-family: var(--body); font-size: 16px; line-height: 1.6;
+  padding-left: max(24px, env(safe-area-inset-left, 0px));
+  padding-right: max(24px, env(safe-area-inset-right, 0px));
+  transition: background .3s, color .3s;
+}
+a { color: inherit; }
+img { display: block; max-width: 100%; height: auto; }
+[hidden] { display: none !important; }
+:focus-visible { outline: 1px solid var(--fg); outline-offset: 3px; }
+
+/* NAV — matches index.html */
+nav { display: flex; justify-content: space-between; align-items: center; padding-block: 14px; font-size: 13px; letter-spacing: .02em; }
+nav .group { display: flex; gap: 20px; align-items: center; }
+nav a, nav button { font: inherit; color: var(--fg); text-decoration: none; background: none; border: 0; cursor: pointer; }
+nav a:hover, nav button:hover { text-decoration: underline; }
+
+main { max-width: 1120px; margin: 0 auto; padding-block: 56px 80px; }
+
+/* HEADER */
+.title { font-family: var(--display); font-weight: normal; font-size: 104px; line-height: 1; }
+.sub { font-size: 14px; color: var(--muted); margin-top: 8px; }
+.hero { margin-top: 32px; display: flex; justify-content: center; background: var(--panel); }
+.hero img { width: auto; max-height: 520px; }
+.hero video { width: auto; max-width: 100%; max-height: 420px; display: block; }
+
+/* SECTIONS */
+/* section text is indented; the heading pulls back out to the left edge */
+section { margin-top: 56px; padding-left: var(--indent); }
+:root { --indent: 40px; }
+h2 { font-family: var(--display); font-weight: normal; font-size: 28px; line-height: 1.1; margin: 0 0 12px calc(-1 * var(--indent)); }
+section p + p { margin-top: 14px; }
+.pics { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-top: 20px; }
+.pics.one { grid-template-columns: minmax(0, 1fr); max-width: 820px; }
+figure { margin: 0; }
+figure button { display: block; width: 100%; border: 0; padding: 0; background: none; cursor: zoom-in; }
+figure button img { width: auto; max-width: 100%; max-height: 420px; margin: 0 auto; transition: opacity .2s; }
+figure button:hover img { opacity: .85; }
+figcaption { font-size: 13px; color: var(--muted); margin-top: 6px; }
+
+.code { background: var(--panel); max-height: 360px; overflow: auto; margin-top: 16px; }
+.code pre { padding: 16px 20px; font-family: var(--mono); font-size: 12px; line-height: 1.6; }
+
+h3 { font-family: var(--display); font-weight: normal; font-size: 20px; margin-top: 40px; }
+.tech { list-style: disc; padding-left: 20px; margin-top: 8px; }
+
+/* PREV / NEXT */
+.pager { display: flex; justify-content: space-between; gap: 16px; margin-top: 64px; padding-top: 16px; border-top: 1px solid var(--fg); font-size: 14px; }
+.pager a { text-decoration: none; }
+.pager a:hover { text-decoration: underline; }
+
+footer { display: flex; justify-content: space-between; font-size: 13px; padding-block: 14px; }
+
+/* LIGHTBOX */
+.lb { position: fixed; inset: 0; background: rgba(0,0,0,.92); display: flex; align-items: center; justify-content: center; padding: 24px; z-index: 10; cursor: zoom-out; }
+.lb img { max-height: 100%; width: auto; }
+
+@media (max-width: 600px) {
+  main { padding-block: 40px 64px; }
+  .title { font-size: 64px; }
+  :root { --indent: 20px; }
+  .pics { grid-template-columns: minmax(0, 1fr); }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }

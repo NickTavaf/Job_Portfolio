@@ -1,0 +1,23 @@
+/* bio.css: styles only for the bio page */
+
+/* Selected Work list */
+.work { list-style: none; display: grid; gap: 10px; }
+.work a { display: flex; justify-content: space-between; gap: 16px; border-bottom: 1px solid var(--fg); padding-bottom: 8px; text-decoration: none; }
+.work a:hover span:first-child { text-decoration: underline; }
+.work .what { color: var(--muted); font-size: 14px; text-align: right; }
+
+/* Contact list */
+.contact { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 6px 24px; }
+.contact dt { color: var(--muted); }
+.contact dd { overflow-wrap: anywhere; }
+
+/* About: photo beside the text */
+.about { display: grid; grid-template-columns: 380px minmax(0, 1fr); gap: 32px; align-items: center; }
+.me { width: 100%; height: auto; }   /* full photo, no crop, in color */
+.about-text { font-size: 18px; line-height: 1.6; }
+.about-text p + p { margin-top: 16px; }
+@media (max-width: 800px) {
+  .about { grid-template-columns: minmax(0, 1fr); gap: 20px; }
+  .me { max-width: 420px; }
+  .about-text { font-size: 16px; }
+}

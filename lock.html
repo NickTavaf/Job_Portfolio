@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nick Tavaf — Lock</title>
+<link rel="stylesheet" href="css/project.css">
+<link rel="stylesheet" href="css/lock.css">
+</head>
+<body>
+<nav>
+  <div class="group">
+    <a href="index.html" data-s>Nick Tavaf</a>
+    <a href="index.html" data-s>Work.</a>
+    <a href="#" data-s>Fun.</a>
+    <a href="bio.html" data-s>About.</a>
+  </div>
+  <div class="group"><button id="toggleBtn" type="button" data-s>b&amp;w</button></div>
+</nav>
+
+<main>
+  <h1 class="title" id="title" aria-label="Lock">LOCK</h1>
+  <p class="sub">Physical Computing · Objectified [dis]Topias, sophomore spring · Solo project</p>
+
+  <div class="hero">
+    <video src="images/Lock%20Video.mp4" autoplay muted loop playsinline preload="auto" aria-label="The lock on my door: the actuator pushes the lever and slides the bolt closed, then pulls it open"></video>
+  </div>
+
+  <section>
+    <h2>Overview</h2>
+    <p>A motorized door lock built from exposed parts. Press a button and an Arduino drives a 12V linear actuator, which pushes a lever I made from aluminum and slides the bolt of a keyed barrel lock open or closed. It hangs on my bedroom door, and every wire and board is left on display.</p>
+  </section>
+
+  <section>
+    <h2>Concept</h2>
+    <p>The assignment for Objectified [dis]Topias was to design for a dystopia of any kind. I researched a world where security is heavily monitored, where every lock is connected and every door reports back to someone.</p>
+    <p>My answer was to go the other way: an analog, vintage-looking lock that you can see working. Nothing is hidden in a housing or an app. The circuit, the motor driver and the actuator are all mounted in the open, so you can follow exactly what happens when the button is pressed.</p>
+    <p>It was also my chance to learn Arduino properly. This was the project where I learned to write Arduino code and to drive a motor that needs more power than the board can give on its own.</p>
+  </section>
+
+  <section>
+    <h2>Build</h2>
+    <p>Everything mounts to a single metal plate. The barrel lock sits at the bottom, with the actuator above it. I cut, bent and drilled a strip of aluminum into a lever that links the actuator's rod to the bolt, so when the rod extends or retracts, the bolt slides with it.</p>
+    <p>My teacher suggested leaning into the exposed look for the controls too, so the push buttons run off on very long wires instead of being tucked away. The wiring on the plate is routed by hand in straight runs, so the electronics read as part of the design.</p>
+    <div class="pics">
+      <figure>
+        <button type="button"><img src="images/Hero%20Photo.jpeg" alt="The finished lock plate on a workbench: motor driver, Arduino Uno, linear actuator and barrel lock, with a push button on a long wire" width="1500" height="2000" loading="lazy"></button>
+        <figcaption>The finished plate, with the push button on its long wire</figcaption>
+      </figure>
+      <figure>
+        <button type="button"><img src="images/Install%20Photo.jpeg" alt="The lock plate installed on a white bedroom door, wired to power" width="1500" height="2000" loading="lazy"></button>
+        <figcaption>Installed on my door</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section>
+    <h2>Circuit</h2>
+    <p>The Arduino can't power a 12V actuator by itself, so it goes through an L298N motor driver. The Arduino reads the button and sends a direction signal to the driver, and the driver switches the 12V supply to push the actuator out or pull it back in. One power jack feeds the driver, and the driver feeds the actuator.</p>
+    <div class="pics one">
+      <figure>
+        <button type="button"><img src="images/Circuit%20Design.png" alt="Illustrated circuit layout: motor driver, Arduino, power jack, linear actuator and the lever connecting it to the bolt" width="776" height="1150" loading="lazy"></button>
+        <figcaption>Circuit design: motor driver (red), Arduino (green), actuator and lever</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section>
+    <h2>Reflection</h2>
+    <p>This project taught me how to work with Arduino and how to power and control a motor safely through a driver. It also showed me how much of a project's meaning can come from what you choose to show. Leaving the wiring exposed turned a lock into a statement about trust and visibility.</p>
+    <p>The next step I wanted to explore, and didn't have time for, was swapping the wired buttons for a Bluetooth connection, and thinking about how to keep that wireless version as transparent as the wired one.</p>
+
+    <h3>Technologies Used</h3>
+    <ul class="tech"><li>Arduino Uno</li><li>L298N motor driver</li><li>12V linear actuator</li><li>Keyed barrel lock</li><li>Hand-cut aluminum lever and mounting plate</li></ul>
+  </section>
+
+  <div class="pager">
+    <a href="lamp.html">← Previous Project: Lamp</a>
+    <a href="glimpo.html">Next Project: Glimpo →</a>
+  </div>
+</main>
+
+<footer><span data-s>New York, NY</span><span data-s>© 2026</span></footer>
+
+<div class="lb" id="lb" hidden><img id="lbImg" alt=""></div>
+<script src="project.js"></script>
+</body>
+</html>
