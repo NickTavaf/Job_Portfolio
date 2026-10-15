@@ -4,10 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Nick Tavaf — Lock</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=IBM+Plex+Mono:wght@400&display=swap">
 <link rel="stylesheet" href="css/project.css">
 <link rel="stylesheet" href="css/lock.css">
 </head>
-<body>
+<body class="lock">
 <nav>
   <div class="group">
     <a href="index.html" data-s>Nick Tavaf</a>
@@ -18,66 +19,85 @@
   <div class="group"><button id="toggleBtn" type="button" data-s>b&amp;w</button></div>
 </nav>
 
-<main>
-  <h1 class="title" id="title" aria-label="Lock">LOCK</h1>
-  <p class="sub">Physical Computing · Objectified [dis]Topias, sophomore spring · Solo project</p>
+<main id="page">
+  <h1 class="mtitle" id="title" aria-label="Lock">LOCK</h1>
+  <header class="open" id="open">
+    <video src="images/Lock%20Video.mp4" autoplay muted loop playsinline preload="auto" aria-label="The lock on my door: the bolt closes, then opens"></video>
+    <div class="half l"><span>LO</span></div>
+    <div class="half r"><span>CK</span></div>
+  </header>
 
-  <div class="hero">
-    <video src="images/Lock%20Video.mp4" autoplay muted loop playsinline preload="auto" aria-label="The lock on my door: the actuator pushes the lever and slides the bolt closed, then pulls it open"></video>
-  </div>
-
-  <section>
-    <h2>Overview</h2>
-    <p>A motorized door lock built from exposed parts. Press a button and an Arduino drives a 12V linear actuator, which pushes a lever I made from aluminum and slides the bolt of a keyed barrel lock open or closed. It hangs on my bedroom door, and every wire and board is left on display.</p>
+  <section class="intro wrap" id="intro">
+    <p class="lede">A motorized door lock with every part left on display. Press the wired button and an Arduino Uno drives a 12V linear actuator through an L298N motor driver. The actuator pushes a lever I cut from aluminum, and the lever slides the bolt of a keyed barrel lock. It's all mounted on one metal plate on my bedroom door.</p>
+    <dl class="meta">
+      <div><dt>Role</dt><dd>Solo: concept, fabrication, wiring, code</dd></div>
+      <div><dt>Course</dt><dd>Objectified [dis]Topias</dd></div>
+      <div><dt>When</dt><dd>Sophomore spring</dd></div>
+      <div><dt>Program</dt><dd>BFA Design and Technology, Parsons</dd></div>
+    </dl>
   </section>
 
-  <section>
-    <h2>Concept</h2>
-    <p>The assignment for Objectified [dis]Topias was to design for a dystopia of any kind. I researched a world where security is heavily monitored, where every lock is connected and every door reports back to someone.</p>
-    <p>My answer was to go the other way: an analog, vintage-looking lock that you can see working. Nothing is hidden in a housing or an app. The circuit, the motor driver and the actuator are all mounted in the open, so you can follow exactly what happens when the button is pressed.</p>
-    <p>It was also my chance to learn Arduino properly. This was the project where I learned to write Arduino code and to drive a motor that needs more power than the board can give on its own.</p>
-  </section>
 
-  <section>
-    <h2>Build</h2>
-    <p>Everything mounts to a single metal plate. The barrel lock sits at the bottom, with the actuator above it. I cut, bent and drilled a strip of aluminum into a lever that links the actuator's rod to the bolt, so when the rod extends or retracts, the bolt slides with it.</p>
-    <p>My teacher suggested leaning into the exposed look for the controls too, so the push buttons run off on very long wires instead of being tucked away. The wiring on the plate is routed by hand in straight runs, so the electronics read as part of the design.</p>
-    <div class="pics">
-      <figure>
-        <button type="button"><img src="images/Hero%20Photo.jpeg" alt="The finished lock plate on a workbench: motor driver, Arduino Uno, linear actuator and barrel lock, with a push button on a long wire" width="1500" height="2000" loading="lazy"></button>
-        <figcaption>The finished plate, with the push button on its long wire</figcaption>
-      </figure>
-      <figure>
-        <button type="button"><img src="images/Install%20Photo.jpeg" alt="The lock plate installed on a white bedroom door, wired to power" width="1500" height="2000" loading="lazy"></button>
-        <figcaption>Installed on my door</figcaption>
-      </figure>
+  <section class="band dark" id="brief">
+    <div class="wrap split">
+      <p class="tag">The brief</p>
+      <div><p class="big">The assignment was to design for a dystopia of any kind. I looked at a world where security is heavily monitored: every lock is connected, and every door reports back to someone you can't see.</p><p>My answer was a lock that hides nothing. It's analog and a little vintage, and you can watch it work. The circuit, the motor driver and the actuator are all mounted in the open, so you can follow exactly what happens when the button is pressed.</p></div>
     </div>
   </section>
 
-  <section>
-    <h2>Circuit</h2>
-    <p>The Arduino can't power a 12V actuator by itself, so it goes through an L298N motor driver. The Arduino reads the button and sends a direction signal to the driver, and the driver switches the 12V supply to push the actuator out or pull it back in. One power jack feeds the driver, and the driver feeds the actuator.</p>
-    <div class="pics one">
-      <figure>
-        <button type="button"><img src="images/Circuit%20Design.png" alt="Illustrated circuit layout: motor driver, Arduino, power jack, linear actuator and the lever connecting it to the bolt" width="776" height="1150" loading="lazy"></button>
-        <figcaption>Circuit design: motor driver (red), Arduino (green), actuator and lever</figcaption>
-      </figure>
+  <section class="pull wrap" id="pull">
+    <p class="huge slide from-l">Seeing how it works is the point.</p>
+    <p class="after">Smart locks ask you to trust what's inside a sealed box. This one has no box, so there's nothing to take on trust. It was also my chance to learn Arduino properly: writing the code, and driving a motor that needs more power than the board can supply on its own.</p>
+  </section>
+
+
+  <section class="duo" id="duo">
+    <figure class="slide from-l"><img src="images/Hero%20Photo.jpeg" alt="The finished lock plate on a workbench, with the push button on a long wire" width="1500" height="2000" loading="lazy"><figcaption>The plate on the bench. The button is on a long wire on purpose.</figcaption></figure>
+    <figure class="slide from-r"><img src="images/Install%20Photo.jpeg" alt="The lock plate installed on a white bedroom door" width="1500" height="2000" loading="lazy"><figcaption>Installed on my door.</figcaption></figure>
+  </section>
+
+  <section class="wrap build" id="build">
+    <p class="tag">Build</p>
+    <ol>
+      <li><h3>Plate</h3><p>Everything mounts to a single metal plate. The barrel lock sits at the bottom, with the actuator above it, and the boards above that.</p></li>
+      <li><h3>Lever</h3><p>I cut, bent and drilled a strip of aluminum into a lever that links the actuator's rod to the bolt. When the rod extends or retracts, the bolt slides with it.</p></li>
+      <li><h3>Wiring</h3><p>The wires on the plate are routed by hand in straight runs, so the electronics read as part of the design instead of a mess to hide.</p></li>
+      <li><h3>Button</h3><p>My teacher suggested pushing the exposed look further, so the push button runs off on a very long wire instead of being built in.</p></li>
+    </ol>
+  </section>
+
+
+  <section class="band red" id="moves">
+    <div class="wrap">
+      <p class="tag">How it moves</p>
+      <div class="verbs">
+        <div><p class="verb">PRESS</p><p>The wired button tells the Arduino Uno to move.</p></div>
+        <div><p class="verb">PUSH</p><p>The L298N switches 12V and the actuator extends or pulls back.</p></div>
+        <div><p class="verb">SLIDE</p><p>The aluminum lever carries that motion to the bolt.</p></div>
+      </div>
     </div>
   </section>
 
-  <section>
-    <h2>Reflection</h2>
-    <p>This project taught me how to work with Arduino and how to power and control a motor safely through a driver. It also showed me how much of a project's meaning can come from what you choose to show. Leaving the wiring exposed turned a lock into a statement about trust and visibility.</p>
-    <p>The next step I wanted to explore, and didn't have time for, was swapping the wired buttons for a Bluetooth connection, and thinking about how to keep that wireless version as transparent as the wired one.</p>
-
-    <h3>Technologies Used</h3>
-    <ul class="tech"><li>Arduino Uno</li><li>L298N motor driver</li><li>12V linear actuator</li><li>Keyed barrel lock</li><li>Hand-cut aluminum lever and mounting plate</li></ul>
+  <section class="wrap circuit" id="circuit">
+    <div><p class="tag">Circuit</p><p>The Arduino can't power a 12V actuator by itself, so it goes through an L298N motor driver. One 12V jack feeds the driver. When the button is pressed, the Arduino reads it and sends a direction signal to the driver, and the driver switches the 12V supply to push the actuator out or pull it back in.</p>
+      <dl class="paths"><div><dt>Power</dt><dd>12V jack → L298N motor driver → linear actuator</dd></div><div><dt>Control</dt><dd>Push button → Arduino Uno → L298N direction inputs</dd></div></dl>
+    </div>
+    <figure class="slide from-r"><img src="images/Circuit%20Design.png" alt="Illustrated circuit layout of the lock plate" width="776" height="1150" loading="lazy"><figcaption>My circuit drawing</figcaption></figure>
   </section>
 
-  <div class="pager">
-    <a href="lamp.html">← Previous Project: Lamp</a>
-    <a href="glimpo.html">Next Project: Glimpo →</a>
-  </div>
+
+  <section class="band dark" id="learned">
+    <div class="wrap split">
+      <p class="tag">Learned</p>
+      <div><p class="big">This project taught me Arduino programming, how to control a motor safely through a driver, and how to fabricate a part like the lever and make it line up with a real lock. It also showed me how much of a project's meaning comes from what you choose to show.</p>
+        <p class="next"><b>Next, not built yet:</b> Next, I'd like to replace the wired button with a Bluetooth connection. I haven't built that yet. The hard part would be keeping a wireless version as easy to understand as the wired one.</p></div>
+    </div>
+  </section>
+
+  <div class="wrap"><div class="pager">
+    <a href="lamp.html" data-s>← Previous Project: Lamp</a>
+    <a href="glimpo.html" data-s>Next Project: Glimpo →</a>
+  </div></div>
 </main>
 
 <footer><span data-s>New York, NY</span><span data-s>© 2026</span></footer>
@@ -85,5 +105,20 @@
 <div class="lb" id="lb" hidden><img id="lbImg" alt=""></div>
 <script src="project.js"></script>
 <script src="fun.js"></script>
+<script>
+(function () {
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  // opening: the two halves of the word slide apart like a bolt pulling back
+  const open = document.getElementById('open');
+  requestAnimationFrame(() => setTimeout(() => open.classList.add('apart'), reduce ? 0 : 450));
+
+  // panels slide the last few percent into place as they arrive (they're always visible)
+  if (!reduce && 'IntersectionObserver' in window) {
+    const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { threshold: .2 });
+    document.querySelectorAll('.slide').forEach(el => { el.classList.add('ready'); io.observe(el); });
+  }
+
+})();
+</script>
 </body>
 </html>

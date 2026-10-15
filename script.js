@@ -144,7 +144,7 @@ window.addEventListener('DOMContentLoaded', () => {
     const { el, li, ch } = allLetters[idx];
     states.get(el)[li] = ch;
     idx++;
-    const delay = idx <= navLetterCount ? 65 : 45;
+    const delay = idx <= navLetterCount ? 25 : 17;
     setTimeout(next, delay);
   }
 

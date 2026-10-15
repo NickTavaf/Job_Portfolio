@@ -7,7 +7,7 @@
   --fg: #000000;
   --muted: #777777;
   --panel: #f2f2f2;
-  --display: Impact, 'Arial Narrow', sans-serif;
+  --display: Impact, 'Anton', 'Arial Narrow', sans-serif;
   --body: 'Times New Roman', Times, serif;
   --mono: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
 }
@@ -34,6 +34,9 @@ nav { display: flex; justify-content: space-between; align-items: center; paddin
 nav .group { display: flex; gap: 20px; align-items: center; }
 nav a, nav button { font: inherit; color: var(--fg); text-decoration: none; background: none; border: 0; cursor: pointer; }
 nav a:hover, nav button:hover { text-decoration: underline; }
+/* the top nav stays put while you scroll; it spans the full width so text slides under it cleanly */
+body > nav { position: sticky; top: 0; z-index: 5; background: var(--bg); transition: background .3s;
+  margin-inline: calc(-1 * max(24px, env(safe-area-inset-left, 0px))); padding-inline: max(24px, env(safe-area-inset-left, 0px)); }
 
 main { max-width: 1120px; margin: 0 auto; padding-block: 56px 80px; }
 
@@ -57,6 +60,7 @@ figure button { display: block; width: 100%; border: 0; padding: 0; background: 
 figure button img { width: auto; max-width: 100%; max-height: 420px; margin: 0 auto; transition: opacity .2s; }
 figure button:hover img { opacity: .85; }
 figcaption { font-size: 13px; color: var(--muted); margin-top: 6px; }
+.pics figure { width: fit-content; max-width: 100%; justify-self: center; }
 
 .code { background: var(--panel); max-height: 360px; overflow: auto; margin-top: 16px; }
 .code pre { padding: 16px 20px; font-family: var(--mono); font-size: 12px; line-height: 1.6; }
@@ -82,3 +86,10 @@ footer { display: flex; justify-content: space-between; font-size: 13px; padding
   .pics { grid-template-columns: minmax(0, 1fr); }
 }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+
+/* phones: each link stays on one line; if both don't fit side by side, Next drops to its own line on the right */
+@media (max-width: 600px) {
+  .pager { flex-wrap: wrap; row-gap: 10px; font-size: 14px; }
+  .pager a { white-space: nowrap; }
+  .pager a:last-child { margin-left: auto; }
+}
