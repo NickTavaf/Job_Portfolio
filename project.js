@@ -13,14 +13,14 @@
 
   // binary scramble on hover (nav + footer)
   document.querySelectorAll('[data-s]').forEach(el => {
-    const word = el.textContent; let iv;
+    const word = el.textContent; el.dataset.final = word; let iv;
     el.addEventListener('mouseenter', () => { clearInterval(iv); iv = setInterval(() => { el.textContent = [...word].map(c => c === ' ' ? ' ' : rc()).join(''); }, 80); });
     el.addEventListener('mouseleave', () => { clearInterval(iv); el.textContent = word; });
   });
 
   // title: binary reveal on load, per-letter scramble on hover
   const title = document.getElementById('title'), word = title.textContent.trim();
-  title.innerHTML = [...word].map(c => `<span>${c}</span>`).join('');
+  title.innerHTML = [...word].map(c => `<span data-char="${c}">${c}</span>`).join('');
   const spans = [...title.children];
   spans.forEach((s, i) => {
     let iv;
