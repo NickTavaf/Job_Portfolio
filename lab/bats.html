@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bats</title>
+<script src="lab.js"></script>
+<link rel="stylesheet" href="lab.css">
+<style>
+  main { max-width: 1100px; margin: 0 auto; padding: 24px 24px 80px; }
+  h2 {
+    font-family: Impact, 'Anton', 'Arial Narrow', sans-serif;
+    font-weight: normal;
+    font-size: 44px;
+    line-height: 1;
+    margin: 56px 0 6px;
+    transform: scaleX(1.3);
+    transform-origin: left;
+  }
+  .sub { font-size: 13px; color: var(--muted); margin-bottom: 18px; }
+
+  /* the live combo at the top */
+  .pick {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 12px;
+    font-size: 13px;
+    margin-bottom: 10px;
+  }
+  .pick b { font-weight: normal; background: var(--fg); color: var(--bg); padding: 1px 6px; }
+  .sizes button {
+    font: inherit; font-size: 13px; color: var(--fg); background: none;
+    border: 1px solid var(--fg); padding: 1px 8px; cursor: pointer; margin-left: 4px;
+  }
+  .sizes button.on { background: var(--fg); color: var(--bg); }
+
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 12px; }
+
+  .card { border: 1px solid var(--fg); cursor: pointer; position: relative; }
+  .card.on { outline: 3px solid var(--fg); outline-offset: 2px; }
+  .card .label {
+    display: flex; justify-content: space-between; gap: 8px;
+    font-size: 13px; padding: 7px 10px; border-top: 1px solid var(--fg);
+  }
+  .card.on .label { background: var(--fg); color: var(--bg); }
+  .card .label span:last-child { color: var(--muted); text-align: right; }
+  .card.on .label span:last-child { color: var(--bg); opacity: 0.7; }
+
+  /* a stage is a mini copy of the nav with bats hanging under some of the words */
+  .stage { position: relative; height: 200px; overflow: hidden; }
+  .stage.big { height: 320px; border: 1px solid var(--fg); }
+  .mnav {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 12px 14px; font-size: 12px; letter-spacing: 0.02em; white-space: nowrap;
+  }
+  .stage.big .mnav { padding: 14px 24px; font-size: 13px; }
+  .mnav div { display: flex; gap: 10px; }
+  .mnav span { display: inline-block; }
+  .stage.big .mnav div { gap: 18px; }
+  .layer { position: absolute; inset: 0; pointer-events: none; }
+  .fx { position: absolute; left: 0; top: 0; pointer-events: none; }
+
+  .bat {
+    position: absolute; left: 0; top: 0;
+    padding: 6px; margin: -6px;          /* bigger click target without moving the sprite */
+    display: flex; flex-direction: column; align-items: center;
+    pointer-events: auto; cursor: pointer;
+    will-change: transform;
+    transition: opacity 0.6s;
+  }
+  .bat .thread { width: 1px; background: var(--fg); height: 0; }
+  .bat canvas { display: block; image-rendering: pixelated; }
+
+  /* the look card: big sprite sheet */
+  .look { max-width: 640px; cursor: default; }
+  .sheet { height: 200px; display: flex; align-items: center; justify-content: space-around; padding: 10px; }
+  .sheet figure { display: flex; flex-direction: column; align-items: center; gap: 8px; font-size: 11px; color: var(--muted); }
+  .sheet canvas { image-rendering: pixelated; }
+  .sheet .tiny { display: flex; gap: 10px; align-items: flex-start; }
+
+  @media (max-width: 500px) {
+    main { padding-left: 16px; padding-right: 16px; }
+    .grid { grid-template-columns: 1fr; }
+    .stage.big .mnav { padding: 14px 12px; font-size: 12px; }
+    .stage.big .mnav div { gap: 9px; }
+  }
+</style>
+</head>
+<body>
+<nav>
+  <div class="nav-left"><a href="../index.html">Nick Tavaf</a><a href="index.html">Lab.</a><a>Bats.</a></div>
+  <div class="nav-right"><button onclick="toggleMode()">b&amp;w</button></div>
+</nav>
+
+<main>
+  <div class="pick">
+    <span>Your pick: <b id="pickLabel">Hang 2 · Fly 1</b> &nbsp;Click a bat to make them fly.</span>
+    <span class="sizes">Size <button data-px="2">S</button><button data-px="3" class="on">M</button><button data-px="4">L</button></span>
+  </div>
+  <div class="stage big" id="combo"></div>
+
+  <h2>THE LOOK</h2>
+  <p class="sub">Shadow's long body without the feet, Cloak's scalloped wings in flight.</p>
+  <div class="card look" id="look"></div>
+
+  <h2>1–5. HANG</h2>
+  <p class="sub">What they do while hanging.</p>
+  <div class="grid" id="hangs"></div>
+
+  <h2>1–6. FLY</h2>
+  <p class="sub">Versions of Sonar. Only the bats on the nav, nothing added. Click any bat in a card to play it.</p>
+  <div class="grid" id="flies"></div>
+</main>
+
+<script>
+// ── SPRITE ──
+// '#' is a pixel, '.' is empty. The hanging frame is drawn right side up and flipped at render time,
+// so the top of the body ends up against the nav.
+const LOOK = {
+  hang: [
+    '#...#',
+    '#...#',
+    '##.##',
+    '#####',
+    '.###.',
+    '#####',
+    '#####',
+    '#####',
+    '#####',
+    '#####',
+    '.###.',
+    '.###.'],
+  up: [
+    '#.................#',
+    '##...............##',
+    '###.....#.#.....###',
+    '####....###....####',
+    '#####..#####..#####',
+    '###################',
+    '###################',
+    '.#####.#####.#####.',
+    '..###...###...###..',
+    '........###........',
+    '.........#.........'],
+  down: [
+    '...................',
+    '........#.#........',
+    '........###........',
+    '......#######......',
+    '...#############...',
+    '.#################.',
+    '###################',
+    '###################',
+    '##.####.###.####.##',
+    '#...##...#...##...#']
+};
+
+// ── DRAWING ──
+let FG = '#000';
+const DPR = Math.min(2, window.devicePixelRatio || 1);
+const rand = (a, b) => a + Math.random() * (b - a);
+
+// Draws a frame into a bat's canvas, but only when something actually changed.
+function draw(cv, rows, px, flip) {
+  const key = rows.join('') + px + flip + FG;
+  if (cv._key === key) return;
+  cv._key = key;
+  const w = rows[0].length, h = rows.length, W = w * px, H = h * px;
+  if (cv._w !== W || cv._h !== H) {
+    cv.width = W * DPR; cv.height = H * DPR;
+    cv.style.width = W + 'px'; cv.style.height = H + 'px';
+    cv._w = W; cv._h = H;
+  }
+  const ctx = cv.getContext('2d');
+  ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+  ctx.clearRect(0, 0, W, H);
+  ctx.fillStyle = FG;
+  for (let r = 0; r < h; r++) {
+    const row = rows[flip ? h - 1 - r : r];
+    for (let c = 0; c < w; c++) if (row[c] === '#') ctx.fillRect(c * px, r * px, px, px);
+  }
+}
+
+// ── HANG STYLES ── return a pose for a hanging bat at time t
+const HANGS = {
+  1: { name: 'Still', note: 'just hangs there', pose: () => ({}) },
+  2: { name: 'Sway', note: 'swings gently from the nav',
+       pose: (b, t) => ({ rot: Math.sin(t * 1.6 + b.ph) * 8 }) },
+  3: { name: 'Breathe', note: 'slow squash and stretch',
+       pose: (b, t) => { const s = Math.sin(t * 2.2 + b.ph); return { sy: 1 + s * 0.07, sx: 1 - s * 0.04 }; } },
+  4: { name: 'Stretch', note: 'every so often one opens its wings',
+       pose: (b, t) => {
+         if (t > b.nextStretch + 0.7) b.nextStretch = t + rand(2.5, 6);
+         const on = t > b.nextStretch && t < b.nextStretch + 0.7;
+         return on ? { frame: 'down', rot: Math.sin(t * 30) * 3 } : {};
+       } },
+  5: { name: 'On a thread', note: 'dangles below the nav, bobbing',
+       pose: (b, t) => ({ thread: b.len + Math.sin(t * 1.3 + b.ph) * 5, rot: Math.sin(t * 0.9 + b.ph) * 3 }) }
+};
+
+// ── FLY STYLES ── all variations of Sonar: a wave spreads out from the bat you click,
+// and each bat bolts away from it the moment the wave reaches it. Only the bats on the nav, nothing added.
+// delay(b, s): when each bat lets go   init(b, s): once on take-off   step(b, dt, lt, s): every frame
+// frame(s, lt): once per frame   fx(ctx, s, lt): draw effects   busy(s, lt): keep going while an effect plays
+const WAVE = 380;                                    // how fast the wave spreads, px per second
+const reach = (s, x, y) => Math.hypot(x - s.cx, y - s.cy) / WAVE;
+
+// bolt away from where the wave came from, dropping off the nav first
+function bolt(b, s) {
+  let dx = b.x - s.cx, dy = Math.max(b.y - s.cy, 30) + rand(10, 40);
+  const d = Math.hypot(dx, dy) || 1, v = rand(240, 330);
+  b.vx = dx / d * v + rand(-40, 40); b.vy = dy / d * v + rand(-40, 40);
+}
+function flee(b, dt, lt) {
+  b.vx *= 1 + dt * 0.7; b.vy *= 1 + dt * 0.7;
+  b.x += (b.vx + Math.cos(lt * 12 + b.ph) * 50) * dt;
+  b.y += (b.vy + Math.sin(lt * 15 + b.ph) * 40) * dt;
+}
+// a dotted pixel circle
+function ring(ctx, x, y, r, alpha) {
+  if (r <= 0 || alpha <= 0) return;
+  ctx.globalAlpha = alpha;
+  const n = Math.max(12, Math.floor(2 * Math.PI * r / 7));
+  for (let j = 0; j < n; j++) {
+    const a = j / n * Math.PI * 2;
+    ctx.fillRect(Math.round(x + Math.cos(a) * r), Math.round(y + Math.sin(a) * r), 2, 2);
+  }
+}
+const waveDone = (s, lt) => lt < Math.hypot(s.W, s.H) / WAVE + 0.4;
+
+const FLIES = {
+  1: { name: 'Sonar', note: 'the original: three rings ripple out, the bats scatter as they pass',
+       flap: 15,
+       delay: (b, s) => reach(s, b.hx, b.hy),
+       init: bolt, step: flee,
+       fx(ctx, s, lt) {
+         const far = Math.hypot(s.W, s.H);
+         for (let k = 0; k < 3; k++) {
+           const r = (lt - k * 0.16) * WAVE;
+           ring(ctx, s.cx, s.cy, r, Math.max(0, 1 - r / far) * (k === 0 ? 1 : 0.45));
+         }
+       },
+       busy: waveDone },
+
+  2: { name: 'Silent', note: 'no rings, just the same ripple of bats taking off',
+       flap: 15,
+       delay: (b, s) => reach(s, b.hx, b.hy),
+       init: bolt, step: flee },
+
+  3: { name: 'One ping', note: 'a single faint ring, quieter than the original',
+       flap: 15,
+       delay: (b, s) => reach(s, b.hx, b.hy),
+       init: bolt, step: flee,
+       fx(ctx, s, lt) { const r = lt * WAVE; ring(ctx, s.cx, s.cy, r, Math.max(0, 0.55 - r / Math.hypot(s.W, s.H))); },
+       busy: waveDone },
+
+  4: { name: 'Echo chain', note: 'no big ring: each bat lets out its own little ping as it leaves',
+       flap: 15,
+       delay: (b, s) => reach(s, b.hx, b.hy) * 1.4,
+       init(b, s) { bolt(b, s); b.px0 = b.x; b.py0 = b.y; b.pt = s.lt; },
+       step: flee,
+       fx(ctx, s, lt) {
+         for (const b of s.bats) {
+           if (b.pt === undefined || b.pt === null) continue;
+           const age = lt - b.pt, r = age * 260;
+           ring(ctx, b.px0, b.py0, r, Math.max(0, 1 - r / 140));
+         }
+       },
+       busy: (s, lt) => s.bats.some(b => b.pt == null || lt - b.pt < 0.6) },
+
+  5: { name: 'Flinch', note: 'no rings: each bat jolts awake and shakes for a beat before it bolts',
+       flap: 15,
+       delay: (b, s) => reach(s, b.hx, b.hy) * 1.2,
+       init(b, s) { b.x0 = b.x; b.y0 = b.y; b.falling = true; },
+       step(b, dt, lt, s) {
+         if (lt < 0.28) {                                   // still gripping the nav, shaking
+           b.x = b.x0 + Math.round(rand(-2, 2));
+           b.y = b.y0 + Math.round(rand(-1, 1));
+           return;
+         }
+         if (b.falling) { b.falling = false; b.x = b.x0; b.y = b.y0; bolt(b, s); }
+         flee(b, dt, lt);
+       } },
+
+  6: { name: 'Nav ripple', note: 'no rings: the nav words hop as the wave passes under them',
+       flap: 15,
+       delay: (b, s) => reach(s, b.hx, b.hy),
+       init: bolt, step: flee,
+       frame(s, lt) {
+         for (const w of s.words) {
+           const k = (lt - reach(s, w.x, s.cy)) / 0.32;      // 0..1 while the wave is passing this word
+           w.el.style.transform = k > 0 && k < 1 ? `translateY(${-Math.sin(k * Math.PI) * 5}px)` : '';
+         }
+       },
+       busy: (s, lt) => s.words.some(w => lt < reach(s, w.x, s.cy) + 0.32) }
+};
+
+// ── STAGE: a mini nav with bats ──
+const NAV_HTML = big => big
+  ? `<div class="mnav"><div><span>Nick Tavaf</span><span data-bat>Bio.</span><span>Fun.</span><span data-bat>IG.</span></div>
+     <div><span>1.</span><span data-bat>2.</span><span>3.</span><span data-bat>4.</span><span>W.</span><span data-bat>b&amp;w</span></div></div>`
+  : `<div class="mnav"><div><span>Nick Tavaf</span><span data-bat>Bio.</span><span>Fun.</span><span data-bat>IG.</span></div>
+     <div><span data-bat>1.</span><span>2.</span><span data-bat>3.</span><span>W.</span><span data-bat>b&amp;w</span></div></div>`;
+
+const sel = { hang: '2', fly: '1', px: 3 };
+const stages = [];
+
+class Stage {
+  constructor(root, get) {
+    this.root = root;
+    this.get = get;                    // () => ({ hang, fly })
+    root.innerHTML = NAV_HTML(root.classList.contains('big')) + '<div class="layer"><canvas class="fx"></canvas></div>';
+    this.layer = root.querySelector('.layer');
+    this.fx = root.querySelector('.fx');
+    this.items = [...root.querySelectorAll('[data-bat]')];
+    this.state = 'hang';
+    this.bats = this.items.map((_, i) => {
+      const el = document.createElement('div');
+      el.className = 'bat';
+      el.innerHTML = '<div class="thread"></div><canvas></canvas>';
+      el.addEventListener('click', e => { e.stopPropagation(); this.onBatClick?.(); this.launch(i); });
+      this.layer.appendChild(el);
+      return { i, el, thread: el.firstChild, cv: el.lastChild, ph: rand(0, 6.28),
+               nextStretch: rand(1, 5), len: rand(10, 34) };
+    });
+    root.addEventListener('pointermove', e => {
+      const r = root.getBoundingClientRect();
+      this.mouse = { x: e.clientX - r.left, y: e.clientY - r.top };
+    });
+    root.addEventListener('pointerleave', () => { this.mouse = null; });
+    this.measure();
+    stages.push(this);
+  }
+
+  measure() {
+    const r = this.root.getBoundingClientRect();
+    this.W = r.width; this.H = r.height;
+    this.fx.width = this.W * DPR; this.fx.height = this.H * DPR;
+    this.fx.style.width = this.W + 'px'; this.fx.style.height = this.H + 'px';
+    this.items.forEach((it, i) => {
+      const q = it.getBoundingClientRect();
+      this.bats[i].hx = q.left + q.width / 2 - r.left;
+      this.bats[i].hy = q.bottom - r.top - 1;
+    });
+    // every nav word, for flights that move the text
+    this.words = [...this.root.querySelectorAll('.mnav span')].map(el => {
+      const q = el.getBoundingClientRect();
+      return { el, x: q.left + q.width / 2 - r.left };
+    });
+  }
+
+  launch(i) {
+    if (this.state !== 'hang') return;
+    const F = FLIES[this.get().fly];
+    this.state = 'fly';
+    this.F = F;
+    this.t0 = performance.now() / 1000;
+    this.lt = 0;
+    this.clicked = i;
+    const c = this.bats[i];
+    this.cx = c.hx; this.cy = c.hy + (c.th || 0) + (c.cv._h || 30) / 2;
+    this.bats.forEach(b => {
+      Object.assign(b, { flying: false, done: false, falling: false, pt: null });
+    });
+    this.bats.forEach(b => { b.delay = F.delay ? F.delay(b, this) : 0; });
+  }
+
+  hangPose(b, t, H, px) {
+    const p = H.pose(b, t);
+    draw(b.cv, p.frame === 'down' ? LOOK.down : LOOK.hang, px, true);
+    const th = p.thread || 0;
+    b.thread.style.height = th + 'px';
+    b.th = th;
+    b.el.style.transformOrigin = '50% 6px';
+    b.el.style.transform =
+      `translate(${b.hx - b.cv._w / 2}px, ${b.hy}px) rotate(${p.rot || 0}deg) scale(${p.sx || 1}, ${p.sy || 1})`;
+  }
+
+  update(t, dt) {
+    const H = HANGS[this.get().hang], px = sel.px;
+    const F = this.F;
+
+    if (this.state === 'gone' && t > this.backAt) {
+      this.state = 'hang';
+      this.bats.forEach(b => {
+        b.done = false; b.flying = false;
+        b.el.style.transition = 'none'; b.el.style.opacity = 0;
+        requestAnimationFrame(() => { b.el.style.transition = ''; b.el.style.opacity = 1; });
+      });
+    }
+
+    if (this.state === 'fly') {
+      this.lt = t - this.t0;
+      F.frame?.(this, this.lt);
+    }
+
+    let allDone = true;
+    for (const b of this.bats) {
+      const waiting = this.state === 'fly' && !b.flying && this.lt < b.delay;
+      if (this.state !== 'fly' || waiting) {
+        if (waiting) allDone = false;
+        this.hangPose(b, t, H, px);
+        continue;
+      }
+      if (b.done) continue;
+      if (!b.flying) {
+        // let go: start from where the body was hanging
+        b.flying = true;
+        b.lt = 0;
+        b.x = b.hx;
+        b.y = b.hy + (b.th || 0) + b.cv._h / 2;
+        b.thread.style.height = '0px';
+        F.init(b, this);
+      }
+      if (this.fly(b, px, dt)) allDone = false;
+    }
+
+    const ctx = this.fx.getContext('2d');
+    if (this.state === 'fly') {
+      if (F.busy?.(this, this.lt)) allDone = false;
+      ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+      ctx.clearRect(0, 0, this.W, this.H);
+      if (F.fx) { ctx.fillStyle = FG; F.fx(ctx, this, this.lt); ctx.globalAlpha = 1; }
+    }
+
+    if (this.state === 'fly' && allDone) {
+      this.state = 'gone';
+      this.backAt = t + 0.9;
+      ctx.clearRect(0, 0, this.W, this.H);
+    }
+  }
+
+  // Moves one flying bat a frame. Returns false once it has left the stage.
+  fly(b, px, dt) {
+    const F = this.F;
+    b.lt += dt;
+    const x0 = b.x;
+    F.step(b, dt, b.lt, this);
+    const vx = b.falling ? 0 : (b.x - x0) / Math.max(dt, 0.001);
+    if (b.fph === undefined) { b.fph = rand(0, 1); b.rate = rand(0.85, 1.2); }
+    const flap = Math.floor((b.lt + b.fph) * (F.flap || 9) * b.rate * 2) % 2;
+    draw(b.cv, b.falling ? LOOK.hang : (flap ? LOOK.down : LOOK.up), px, b.falling);
+    b.el.style.transformOrigin = '50% 50%';
+    b.el.style.transform =
+      `translate(${b.x - b.cv._w / 2}px, ${b.y - b.cv._h / 2}px) ` +
+      `rotate(${Math.max(-25, Math.min(25, vx * 0.06))}deg)`;
+
+    const m = 60;
+    if (b.x < -m || b.x > this.W + m || b.y < -m || b.y > this.H + m) {
+      b.done = true;
+      b.el.style.transition = 'none';
+      b.el.style.opacity = 0;
+      return false;
+    }
+    return true;
+  }
+}
+
+// ── BUILD THE PAGE ──
+function card(parent, title, note, onPick) {
+  const el = document.createElement('div');
+  el.className = 'card';
+  el.innerHTML = `<div class="body"></div><div class="label"><span>${title}</span><span>${note}</span></div>`;
+  el.addEventListener('click', onPick);
+  parent.appendChild(el);
+  return el;
+}
+
+const lookEl = document.getElementById('look');
+lookEl.innerHTML = `<div class="sheet">
+    <figure><canvas></canvas>hang</figure>
+    <figure><canvas></canvas>fly</figure>
+    <figure><div class="tiny"><canvas></canvas><canvas></canvas></div>real size</figure>
+  </div><div class="label"><span>Cloak × Shadow</span><span>no eyes, no feet</span></div>`;
+const sheet = lookEl.querySelectorAll('canvas');
+
+const hangCards = {}, flyCards = {};
+
+for (const [id, H] of Object.entries(HANGS)) {
+  const c = card(document.getElementById('hangs'), `${id}. ${H.name}`, H.note, () => pick('hang', id));
+  const st = document.createElement('div'); st.className = 'stage';
+  c.querySelector('.body').appendChild(st);
+  const s = new Stage(st, () => ({ hang: id, fly: sel.fly }));
+  s.onBatClick = () => pick('hang', id);
+  hangCards[id] = c;
+}
+
+for (const [id, F] of Object.entries(FLIES)) {
+  const c = card(document.getElementById('flies'), `${id}. ${F.name}`, F.note, () => pick('fly', id));
+  const st = document.createElement('div'); st.className = 'stage';
+  c.querySelector('.body').appendChild(st);
+  const s = new Stage(st, () => ({ hang: sel.hang, fly: id }));
+  s.onBatClick = () => pick('fly', id);
+  flyCards[id] = c;
+}
+
+new Stage(document.getElementById('combo'), () => sel);
+
+function pick(kind, id) {
+  sel[kind] = id;
+  render();
+  try { history.replaceState(null, '', `#${sel.hang}${sel.fly}${sel.px}`); } catch (e) {}
+}
+
+function render() {
+  for (const [id, c] of Object.entries(hangCards)) c.classList.toggle('on', id === sel.hang);
+  for (const [id, c] of Object.entries(flyCards)) c.classList.toggle('on', id === sel.fly);
+  document.querySelectorAll('.sizes button').forEach(b => b.classList.toggle('on', +b.dataset.px === sel.px));
+  const size = { 2: 'S', 3: 'M', 4: 'L' }[sel.px];
+  document.getElementById('pickLabel').textContent = `Hang ${sel.hang} · Fly ${sel.fly} · Size ${size}`;
+}
+
+document.querySelectorAll('.sizes button').forEach(b =>
+  b.addEventListener('click', () => pick('px', +b.dataset.px)));
+
+// restore a pick from the URL, e.g. bats.html#243
+const m = location.hash.match(/^#([1-5])([1-6])([2-4])?$/);
+if (m) { sel.hang = m[1]; sel.fly = m[2]; if (m[3]) sel.px = +m[3]; }
+render();
+
+// ── LOOP ──
+let last = performance.now();
+function loop(now) {
+  const dt = Math.min(0.05, (now - last) / 1000);
+  last = now;
+  const t = now / 1000;
+  FG = cssVar('--fg') || '#000';
+  for (const s of stages) s.update(t, dt);
+  const wing = Math.floor(t * 6) % 2 ? LOOK.down : LOOK.up;
+  draw(sheet[0], LOOK.hang, 8, true);
+  draw(sheet[1], wing, 7, false);
+  draw(sheet[2], LOOK.hang, sel.px, true);
+  draw(sheet[3], wing, sel.px, false);
+  requestAnimationFrame(loop);
+}
+requestAnimationFrame(loop);
+
+const remeasure = () => stages.forEach(s => s.measure());
+window.addEventListener('resize', remeasure);
+window.addEventListener('load', remeasure);
+document.fonts?.ready.then(remeasure);
+</script>
+</body>
+</html>

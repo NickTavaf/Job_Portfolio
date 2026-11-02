@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Final Bats</title>
+<script src="lab.js"></script>
+<link rel="stylesheet" href="lab.css">
+<style>
+  main { max-width: 1100px; margin: 0 auto; padding: 24px 24px 80px; }
+  h2 {
+    font-family: Impact, 'Anton', 'Arial Narrow', sans-serif;
+    font-weight: normal;
+    font-size: 44px;
+    line-height: 1;
+    margin: 32px 0 6px;
+    transform: scaleX(1.3);
+    transform-origin: left;
+  }
+  .sub { font-size: 13px; color: var(--muted); margin-bottom: 18px; }
+  .pick {
+    display: flex; justify-content: space-between; align-items: baseline;
+    flex-wrap: wrap; gap: 12px; font-size: 13px; margin-bottom: 10px;
+  }
+  .pick b { font-weight: normal; background: var(--fg); color: var(--bg); padding: 1px 6px; }
+  .pick button, .pick a {
+    font: inherit; font-size: 13px; color: var(--fg); background: none; text-decoration: none;
+    border: 1px solid var(--fg); padding: 1px 8px; cursor: pointer; margin-left: 4px;
+  }
+  .pick button:hover, .pick a:hover, .pick button.on { background: var(--fg); color: var(--bg); }
+  .pick button { margin-bottom: 4px; }
+
+  /* the preview: a copy of the site nav in a box, with the real bats.js running inside it */
+  .stage { position: relative; height: 420px; overflow: hidden; border: 1px solid var(--fg); }
+  .stage nav { position: static; padding: 14px 24px; }
+  .stage .nav-left { gap: 20px; }
+  .stage .nav-right { gap: 16px; }
+  .stage nav a, .stage nav button { font-size: 13px; letter-spacing: 0.02em; }
+
+  @media (max-width: 500px) {
+    main { padding-left: 16px; padding-right: 16px; }
+    .stage nav { padding: 14px 16px; }
+    .stage .nav-left { gap: 12px; }
+    .stage .nav-right { gap: 10px; }
+  }
+</style>
+</head>
+<body>
+<nav>
+  <div class="nav-left"><a href="../index.html">Nick Tavaf</a><a href="index.html">Lab.</a><a href="bats.html">Bats.</a><a>Final.</a></div>
+  <div class="nav-right"><button onclick="toggleMode()">b&amp;w</button></div>
+</nav>
+
+<main>
+  <h2>FINAL BATS</h2>
+  <p class="sub">Silent flight, every bat in its own direction, sway, a tiny ripple in the nav. They only hang from words. After they leave they build back pixel by pixel on new random words.</p>
+
+  <div class="pick">
+    <span><b id="status">Hanging</b> &nbsp;Click a bat to make them fly.</span>
+    <span>Come back after <button data-after="3" class="on">3s preview</button><button data-after="30">30s real</button></span>
+  </div>
+  <div class="pick">
+    <span>Comeback:
+      <button data-back="fade">1. Fade in</button><button data-back="fly">2. Fly back</button><button data-back="onebyone">3. One by one</button><button data-back="pixels">4. Pixel build</button><button data-back="static">5. Static</button>
+    </span>
+    <span><a href="home.html">See it on the homepage</a></span>
+  </div>
+  <p class="sub" id="backNote"></p>
+
+  <div class="stage" data-bats-stage>
+    <nav>
+      <div class="nav-left">
+        <a>Nick Tavaf</a>
+        <a>Bio.</a>
+        <a>Fun.</a>
+        <a>IG.</a>
+      </div>
+      <div class="nav-right">
+        <a>1.</a>
+        <a>2.</a>
+        <a>3.</a>
+        <a>4.</a>
+        <a>W.</a>
+        <button>b&amp;w</button>
+      </div>
+    </nav>
+  </div>
+</main>
+
+<script>
+  // the comeback styles, and a short wait so you don't have to sit through 30 seconds every time
+  const NOTES = {
+    fade: 'They fade in where they hang.',
+    fly: 'They fly in from the edges on curved paths and land on the nav.',
+    onebyone: 'Same as Fly back, but one bat at a time.',
+    pixels: 'Each bat builds itself back pixel by pixel.',
+    static: 'Each bat flickers in out of pixel noise, like a bad signal.'
+  };
+  window.BATS_CONFIG = { returnAfter: 3, comeback: 'pixels' };
+  function choose(attr, key, value) {
+    document.querySelectorAll(`[${attr}]`).forEach(b => b.classList.toggle('on', b.getAttribute(attr) === String(value)));
+    window.BATS_CONFIG[key] = value;
+    document.getElementById('backNote').textContent = NOTES[window.BATS_CONFIG.comeback];
+  }
+  document.querySelectorAll('[data-back]').forEach(b => b.addEventListener('click', () => choose('data-back', 'comeback', b.dataset.back)));
+  document.querySelectorAll('[data-after]').forEach(b => b.addEventListener('click', () => choose('data-after', 'returnAfter', +b.dataset.after)));
+  choose('data-back', 'comeback', 'pixels');
+
+  // show what the bats are doing
+  let timer;
+  window.addEventListener('bats', e => {
+    const el = document.getElementById('status');
+    clearInterval(timer);
+    const { state, backAt } = e.detail;
+    if (state === 'away') {
+      const tick = () => { el.textContent = `Back in ${Math.max(0, (backAt - Date.now()) / 1000).toFixed(1)}s`; };
+      tick(); timer = setInterval(tick, 100);
+    } else el.textContent = { hang: 'Hanging', fly: 'Flying away', return: 'Coming back' }[state];
+  });
+</script>
+<script src="../bats.js"></script>
+</body>
+</html>

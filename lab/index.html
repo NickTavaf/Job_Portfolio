@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lab</title>
+<script src="lab.js"></script>
+<link rel="stylesheet" href="lab.css">
+<style>
+  main { max-width: 768px; margin: 0 auto; padding: 40px 24px 80px; }
+  h1 { font-size: 13px; font-weight: normal; color: var(--muted); margin-bottom: 24px; }
+  a.exp {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 16px;
+    padding: 18px 0;
+    border-top: 1px solid var(--fg);
+    color: var(--fg);
+    text-decoration: none;
+  }
+  a.exp:last-of-type { border-bottom: 1px solid var(--fg); }
+  a.exp .impact { font-size: clamp(40px, 11vw, 84px); line-height: 0.9; transform: scaleX(1.3); transform-origin: left; }
+  a.exp span:last-child { font-size: 13px; text-align: right; max-width: 220px; }
+  a.exp:hover { background: var(--fg); color: var(--bg); }
+</style>
+</head>
+<body>
+<nav>
+  <div class="nav-left"><a href="../index.html">Nick Tavaf</a><a>Lab.</a></div>
+  <div class="nav-right"><button onclick="toggleMode()">b&amp;w</button></div>
+</nav>
+<main>
+  <h1>Experiments. Not linked from the site yet.</h1>
+  <a class="exp" href="final.html"><span class="impact">FINAL BATS</span><span>The chosen bats in a preview box. Reload for new spots.</span></a>
+  <a class="exp" href="home.html"><span class="impact">2. HOME + BATS</span><span>Your real homepage with the final bats on the nav. Reload for new spots.</span></a>
+  <a class="exp" href="bats.html"><span class="impact">1. BATS</span><span>Pixel bats hanging from the nav. Pick a look, a hang and a flight.</span></a>
+</main>
+</body>
+</html>
