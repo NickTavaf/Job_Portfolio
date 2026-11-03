@@ -58,8 +58,8 @@ nav {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 14px 24px;
-  font-size: 13px;
+  padding: 18px 24px;
+  font-size: 15px;
   letter-spacing: 0.01em;
   position: sticky;                   /* stays at the top while you scroll */
   top: 0;
@@ -68,14 +68,14 @@ nav {
   transition: background 0.3s;
 }
 
-.nav-left { display: flex; gap: 20px; align-items: center; }
-.nav-right { display: flex; gap: 16px; align-items: center; }
+.nav-left { display: flex; gap: 23px; align-items: center; }
+.nav-right { display: flex; gap: 18px; align-items: center; }
 
 nav a, nav span, nav button {
   color: var(--fg);
   text-decoration: none;
   font-family: 'Times New Roman', Times, serif;
-  font-size: 13px;
+  font-size: 15px;
   font-weight: normal;
   letter-spacing: 0.02em;
   cursor: pointer;
@@ -105,8 +105,8 @@ main {
   display: flex;
   flex-direction: column;
   justify-content: center;            /* centers the stack on the screen */
-  min-height: calc(100vh - 47px);
-  min-height: calc(100svh - 47px);    /* iPhone: ignores the moving Safari bar */     /* screen height minus the nav */
+  min-height: calc(100vh - 53px);
+  min-height: calc(100svh - 53px);    /* iPhone: ignores the moving Safari bar */     /* screen height minus the nav */
   gap: var(--row-gap);
 }
 
@@ -251,7 +251,7 @@ footer {
 }
 /* ── PHONES ── */
 @media (max-width: 500px) {
-  nav { padding: 14px 16px; }
+  nav { padding: 18px 16px; }
   .nav-left { gap: 12px; }
   .nav-right { gap: 10px; }
   main { padding-left: 16px; padding-right: 16px; }
